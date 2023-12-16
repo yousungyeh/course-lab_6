@@ -13,7 +13,7 @@
 // limitations under the License.
 // SPDX-License-Identifier: Apache-2.0
 
-//`default_nettype none
+`default_nettype wire
 /*
  *-------------------------------------------------------------
  *
@@ -62,29 +62,21 @@ module user_proj_example #(
     input  [127:0] la_oenb,
 
     // IOs
-    input  wire [`MPRJ_IO_PADS-1:0] io_in,
-    output wire [`MPRJ_IO_PADS-1:0] io_out,
-    output wire [`MPRJ_IO_PADS-1:0] io_oeb,
+    input  [`MPRJ_IO_PADS-1:0] io_in,
+    output [`MPRJ_IO_PADS-1:0] io_out,
+    output [`MPRJ_IO_PADS-1:0] io_oeb,
 
     // IRQ
     output [2:0] irq
 );
     wire clk;
     wire rst;
-
-    //wire [`MPRJ_IO_PADS-1:0] io_in;
-    //wire [`MPRJ_IO_PADS-1:0] io_out;
-    //wire [`MPRJ_IO_PADS-1:0] io_oeb;
-
     wire [31:0] rdata; 
     wire [31:0] wdata;
-    wire [BITS-1:0] count;
-
     wire valid;
     wire [3:0] wstrb;
-    wire [31:0] la_write;
     wire decoded;
-
+    wire [31:0]exmem_addr;
     reg ready;
     reg [BITS-17:0] delayed_count;
 
@@ -94,23 +86,11 @@ module user_proj_example #(
     assign wbs_dat_o = rdata;
     assign wdata = wbs_dat_i;
     assign wbs_ack_o = ready;
-
-    // IO
-    assign io_out = count;
-    assign io_oeb = {(`MPRJ_IO_PADS-1){rst}};
-
-    // IRQ
-    assign irq = 3'b000;	// Unused
-
-    // LA
-    assign la_data_out = {{(127-BITS){1'b0}}, count};
-    // Assuming LA probes [63:32] are for controlling the count register  
-    assign la_write = ~la_oenb[63:32] & ~{BITS{valid}};
-    // Assuming LA probes [65:64] are for controlling the count clk & reset  
-    assign clk = (~la_oenb[64]) ? la_data_in[64]: wb_clk_i;
-    assign rst = (~la_oenb[65]) ? la_data_in[65]: wb_rst_i;
-
+    assign clk =  wb_clk_i;
+    assign rst =  wb_rst_i;
     assign decoded = wbs_adr_i[31:20] == 12'h380 ? 1'b1 : 1'b0;
+    assign exmem_addr = { {8{1'b0}}, wbs_adr_i[23:0]};
+
 
     always @(posedge clk) begin
         if (rst) begin
@@ -129,23 +109,6 @@ module user_proj_example #(
         end
     end
 
-/*
-    counter #(
-        .BITS(BITS)
-    ) counter(
-        .clk(clk),
-        .reset(rst),
-        .ready(wbs_ack_o),
-        .valid(valid),
-        .rdata(rdata),
-        .wdata(wbs_dat_i),
-        .wstrb(wstrb),
-        .la_write(la_write),
-        .la_input(la_data_in[63:32]),
-        .count(count)
-    );
-*/
-
     bram user_bram (
         .CLK(clk),
         .WE0(wstrb),
@@ -157,5 +120,4 @@ module user_proj_example #(
 
 endmodule
 
-
-//`default_nettype wire
+`default_nettype wire

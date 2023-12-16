@@ -128,10 +128,24 @@ void main()
 	}
 */	
 	int *tmp = matmul();
-	reg_mprj_datal = *tmp << 16;
-	reg_mprj_datal = *(tmp+1) << 16;
-	reg_mprj_datal = *(tmp+2) << 16;
-	reg_mprj_datal = *(tmp+3) << 16;	
+	//reg_mprj_datal = *tmp << 16;
+	//reg_mprj_datal = *(tmp+1) << 16;
+	//reg_mprj_datal = *(tmp+2) << 16;
+	//reg_mprj_datal = *(tmp+3) << 16;
+	//reg_mprj_datal = *(tmp+4) << 16;
+	//reg_mprj_datal = *(tmp+5) << 16;
+	//reg_mprj_datal = *(tmp+6) << 16;
+	//reg_mprj_datal = *(tmp+7) << 16;
+	//reg_mprj_datal = *(tmp+8) << 16;
+	//reg_mprj_datal = *(tmp+9) << 16;
+	//reg_mprj_datal = *(tmp+10) << 16;
+	//reg_mprj_datal = *(tmp+11) << 16;	
+	reg_mprj_datal = *(tmp+12) << 16;
+	reg_mprj_datal = *(tmp+13) << 16;
+	reg_mprj_datal = *(tmp+14) << 16;
+	reg_mprj_datal = *(tmp+15) << 16;
+	
+	reg_mprj_datal = 0xAB510000;	
 
 	//print("\n");
 	//print("Monitor: Test 1 Passed\n\n");	// Makes simulation very long!
