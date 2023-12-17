@@ -167,9 +167,9 @@ module integrate_tb;
 		begin	
 		wait(checkbits == 16'hAB60);
 		$display("-----------Uart Enable-----------------");
-		//wait(checkbits == 16'hAB61);
-		//$display("\n-----------Test Uart Start-----------------");
-		//send_data_2;
+		wait(checkbits == 16'hAB61);
+		$display("\n-----------Test Uart Start-----------------");
+		send_data_2;
 		end
 		
 
